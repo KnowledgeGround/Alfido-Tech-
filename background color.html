@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Color Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .color-box {
+            width: 100%;
+            height: 150px;
+            background-color: currentColor;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: #3a5a8f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .color-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        .color-value {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f8f8f8;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Background Color Changer</h1>
+        <div class="color-box" id="colorDisplay">Click the button to change my color!</div>
+        <button id="colorBtn">Change Color</button>
+        <div class="color-info">
+            <span>Current Color:</span>
+            <span class="color-value" id="colorValue">#F0F0F0</span>
+        </div>
+    </div>
+
+    <script>
+        const colorBtn = document.getElementById('colorBtn');
+        const colorDisplay = document.getElementById('colorDisplay');
+        const colorValue = document.getElementById('colorValue');
+        const body = document.body;
+
+        // Array of some pleasant preset colors as fallback
+        const pleasantColors = [
+            '#3498db', '#2ecc71', '#9b59b6', '#e74c3c', '#f1c40f',
+            '#1abc9c', '#d35400', '#34495e', '#e67e22', '#16a085'
+        ];
+
+        // Function to generate random hex color
+        function getRandomColor() {
+            // 80% chance for completely random color, 20% chance for pleasant preset color
+            if (Math.random() > 0.2) {
+                // Generate random RGB values
+                const r = Math.floor(Math.random() * 256);
+                const g = Math.floor(Math.random() * 256);
+                const b = Math.floor(Math.random() * 256);
+                
+                // Convert to hex
+                return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+            } else {
+                // Return random color from pleasant preset
+                return pleasantColors[Math.floor(Math.random() * pleasantColors.length)];
+            }
+        }
+
+        // Function to determine text color based on background brightness
+        function getContrastColor(hexColor) {
+            // Convert hex to RGB
+            const r = parseInt(hexColor.substr(1, 2), 16);
+            const g = parseInt(hexColor.substr(3, 2), 16);
+            const b = parseInt(hexColor.substr(5, 2), 16);
+            
+            // Calculate brightness
+            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            
+            // Return black or white depending on brightness
+            return brightness > 128 ? '#000000' : '#FFFFFF';
+        }
+
+        // Function to update the color display
+        function updateColors() {
+            const newColor = getRandomColor();
+            
+            // Update background and display
+            body.style.backgroundColor = newColor;
+            colorDisplay.style.color = newColor;
+            colorDisplay.textContent = newColor;
+            colorValue.textContent = newColor;
+            
+            // Update text color for better contrast
+            const textColor = getContrastColor(newColor);
+            colorDisplay.style.color = textColor;
+            colorValue.style.color = textColor;
+        }
+
+        // Initial setup
+        updateColors();
+
+        // Add event listener to button
+        colorBtn.addEventListener('click', updateColors);
+    </script>
+</body>
+</html>
